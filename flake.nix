@@ -47,6 +47,7 @@
         baml-cli-version = pkgs.callPackage ./pkgs/baml-cli/tests/version.nix { };
         baml-policy = pkgs.baml.tests.policy;
         baml-bridge-generate = pkgs.python3Packages.baml-bridge.tests.generate;
+        nixpkgs-updater = pkgs.callPackage ./examples/nixpkgs-updater/check.nix { };
       });
     };
 }
