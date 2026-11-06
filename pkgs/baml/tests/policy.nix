@@ -68,6 +68,41 @@ runCommand "baml-policy-test" { nativeBuildInputs = [ baml ]; } ''
   expect project-flag fail baml --project mismatch check
   expect project-flag-eq fail baml --project=mismatch check
 
+  # --project anywhere before `query`, including after the command and after
+  # value-taking global flags (as upstream's wrapper parses it).
+  (cd none && expect ../project-after-cmd fail baml check --project ../mismatch)
+  stderr_has project-after-cmd '"0.0.1"'
+  (cd none && expect ../project-after-cmd-eq fail baml generate --project=../mismatch)
+  (cd none && expect ../project-after-flag-value fail baml --color never --project ../mismatch check)
+  (cd none && expect ../project-after-cmd-ok 0 baml check --project ../match)
+
+  # Other TOML spellings of the selector, and odd encodings, must not slip by.
+  project sq-header "['toolchain']
+  version = \"0.0.1\""
+  project quoted-dotted '"toolchain".version = "0.0.1"'
+  project quoted-inline '"toolchain" = { version = "0.0.1" }'
+  project array-then-dotted 'deps = [
+  ["a", "b"],
+  ]
+  toolchain.version = "0.0.1"'
+  project bom ""
+  printf '\357\273\277[toolchain]\nversion = "0.0.1"\n' > bom/baml.toml
+  project crlf ""
+  printf '[toolchain]\r\nversion = "0.0.1"\r\n' > crlf/baml.toml
+  for p in sq-header quoted-dotted quoted-inline array-then-dotted bom crlf; do
+    (cd $p && expect ../$p fail baml check)
+  done
+  project mentions-toolchain '[package_meta]
+  description = "a toolchain = demo"'
+  (cd mentions-toolchain && expect ../mentions-toolchain 0 baml check)
+
+  # The script must not depend on the user's sed/grep (e.g. BSD tools).
+  mkdir fakebin
+  for t in sed grep dirname; do printf '#!/bin/sh\nexit 3\n' > fakebin/$t; chmod +x fakebin/$t; done
+  (cd mismatch && PATH=$PWD/../fakebin expect ../foreign-tools-mismatch fail ${baml}/bin/baml check)
+  stderr_has foreign-tools-mismatch '"0.0.1"'
+  (cd match && PATH=$PWD/../fakebin expect ../foreign-tools-match 0 ${baml}/bin/baml check)
+
   # A user-set BAML_TOOLCHAIN path is an explicit override, as upstream.
   (cd mismatch && BAML_TOOLCHAIN=$cli expect ../env-path 0 baml check)
   (cd none && BAML_TOOLCHAIN=nightly expect ../env-channel fail baml check)

@@ -7,6 +7,10 @@ set -u
 
 version='@version@'
 cli='@cli@'
+# Fixed GNU tools: the parsing below must not depend on the user's PATH.
+SED='@sed@'
+GREP='@grep@'
+DIRNAME='@dirname@'
 
 die() {
   printf 'error: %s\n' "$*" >&2
@@ -24,33 +28,55 @@ run_path() { # executable, args...
   BAML_CLI_ALLOW_DIRECT=1 exec "$exe" "$@"
 }
 
-# --- Command words: toolchain management belongs to Nix -------------------
+# --- Arguments, parsed like upstream's wrapper (invocation.baml) ------------
+# --project is read in any position except after the `query` command; the
+# values of value-taking global flags are skipped.
 
 project_arg=''
 command_word=''
 sub_word=''
 expect_project=0
+skip_value=0
 for arg in "$@"; do
   if [ "$expect_project" = 1 ]; then
     project_arg=$arg
     expect_project=0
     continue
   fi
+  if [ "$skip_value" = 1 ]; then
+    skip_value=0
+    continue
+  fi
+  [ "$arg" = -- ] && break
+  if [ "$command_word" != query ]; then
+    case $arg in
+      --project)
+        expect_project=1
+        continue
+        ;;
+      --project=*)
+        project_arg=${arg#--project=}
+        continue
+        ;;
+    esac
+  fi
   if [ -z "$command_word" ]; then
     case $arg in
-      --) break ;;
-      --project) expect_project=1 ;;
-      --project=*) project_arg=${arg#--project=} ;;
+      --output-preset | --color | --hyperlinks | --diagnostic-format | --agent-skill-check) skip_value=1 ;;
       -*) ;;
       *) command_word=$arg ;;
     esac
-  elif [ -z "$sub_word" ]; then
+    continue
+  fi
+  if [ -z "$sub_word" ]; then
     case $arg in
       -*) ;;
       *) sub_word=$arg ;;
     esac
   fi
 done
+
+# --- Toolchain management belongs to Nix -------------------------------------
 
 case $command_word in
   toolchain)
@@ -79,7 +105,10 @@ fi
 
 find_manifest() { # start
   dir=$1
-  [ -f "$dir" ] && { printf '%s\n' "$dir"; return 0; }
+  [ -f "$dir" ] && {
+    printf '%s\n' "$dir"
+    return 0
+  }
   dir=$(cd "$dir" 2>/dev/null && pwd -P) || return 1
   while :; do
     if [ -f "$dir/baml.toml" ]; then
@@ -87,7 +116,7 @@ find_manifest() { # start
       return 0
     fi
     [ "$dir" = / ] && return 1
-    dir=$(dirname "$dir")
+    dir=$("$DIRNAME" "$dir")
   done
 }
 
@@ -99,57 +128,77 @@ unreadable() {
   die "$manifest: could not read the [toolchain] selector; this BAML is $version (provided by Nix)."
 }
 
-sel_kind=''
-sel_value=''
-record() { # kind, value
-  [ -z "$sel_kind" ] || unreadable
-  sel_kind=$1
-  sel_value=$2
-}
+# Normalised copy: no UTF-8 BOM, no CR line endings.
+content=$("$SED" -e '1s/^\xEF\xBB\xBF//' -e 's/\r$//' "$manifest") || unreadable
+lines() { printf '%s\n' "$content"; }
 
 ws='[[:space:]]*'
 str='"\([^"\\]*\)"'
 tail_ok="$ws\(#.*\)\{0,1\}"
+header_re="^$ws\[${ws}toolchain$ws\]$tail_ok\$"
+dotted_re="^${ws}toolchain$ws\.$ws\(version\|channel\|path\)$ws=$ws$str$tail_ok\$"
+inline_re="^${ws}toolchain$ws=$ws{$ws\(version\|channel\|path\)$ws=$ws$str$ws}$tail_ok\$"
+kv_re="^$ws\(version\|channel\|path\)$ws=$ws$str$tail_ok\$"
+# Any line naming `toolchain` as a key or table, in any TOML spelling.
+mention_re="^$ws\[\{0,2\}$ws[\"']\{0,1\}toolchain[\"']\{0,1\}$ws[].=]"
 
-# Lines before the first table header.
-top=$(sed "/^$ws\[/,\$d" "$manifest")
+sel_kind=''
+sel_value=''
+record() { # "kind value"
+  [ -z "$sel_kind" ] || unreadable
+  sel_kind=${1%% *}
+  sel_value=${1#* }
+}
 
-# [toolchain] table, and refuse any [toolchain.*] sub-table.
-if grep -q "^$ws\[$ws\(toolchain\|\"toolchain\"\)$ws[].]" "$manifest"; then
-  if grep "^$ws\[" "$manifest" | grep -q "toolchain$ws\." ; then unreadable; fi
-  body=$(sed -n "/^$ws\[${ws}toolchain$ws\]$tail_ok\$/,/^$ws\[/p" "$manifest" | sed '1d' | sed "/^$ws\[/d")
-  [ -n "$(grep "^$ws\[${ws}toolchain$ws\]$tail_ok\$" "$manifest")" ] || unreadable
+# Top level ends at the first line starting with `[` (a table header, or a
+# multi-line array continuation; either way, later lines are not top level).
+first_header=$(lines | "$GREP" -n "^$ws\[" | "$SED" -n '1s/:.*//p')
+top_end=${first_header:+$((first_header - 1))}
+
+accepted=' '
+
+# The [toolchain] table.
+header_lines=$(lines | "$GREP" -n "$header_re" | "$SED" 's/:.*//')
+case $header_lines in
+  *[!0-9]*) unreadable ;; # more than one [toolchain] header
+esac
+if [ -n "$header_lines" ]; then
+  accepted="$accepted$header_lines "
+  body=$(lines | "$SED" -n "$((header_lines + 1)),\$p" | "$SED" "/^$ws\[/,\$d")
   while IFS= read -r line; do
-    stripped=$(printf '%s' "$line" | sed "s/^$ws//")
-    case $stripped in '' | '#'*) continue ;; esac
-    kv=$(printf '%s\n' "$line" | sed -n "s/^$ws\(version\|channel\|path\)$ws=$ws$str$tail_ok\$/\1 \2/p")
+    case $(printf '%s' "$line" | "$SED" "s/^$ws//") in
+      '' | '#'*) continue ;;
+    esac
+    kv=$(printf '%s\n' "$line" | "$SED" -n "s/$kv_re/\1 \2/p")
     [ -n "$kv" ] || unreadable
-    record "${kv%% *}" "${kv#* }"
+    record "$kv"
   done <<EOF
 $body
 EOF
 fi
 
-# Dotted keys at top level: toolchain.version = "..."
-if printf '%s\n' "$top" | grep -q "^${ws}toolchain$ws\."; then
-  while IFS= read -r line; do
-    kv=$(printf '%s\n' "$line" | sed -n "s/^${ws}toolchain$ws\.$ws\(version\|channel\|path\)$ws=$ws$str$tail_ok\$/\1 \2/p")
-    [ -n "$kv" ] || unreadable
-    record "${kv%% *}" "${kv#* }"
-  done <<EOF
-$(printf '%s\n' "$top" | grep "^${ws}toolchain$ws\.")
+# Dotted keys and inline tables, only at top level.
+while IFS=: read -r n line; do
+  [ -n "$n" ] || continue
+  if [ -n "$top_end" ] && [ "$n" -gt "$top_end" ]; then continue; fi
+  kv=$(printf '%s\n' "$line" | "$SED" -n -e "s/$dotted_re/\1 \2/p" -e "s/$inline_re/\1 \2/p")
+  [ -n "$kv" ] || continue
+  accepted="$accepted$n "
+  record "$kv"
+done <<EOF
+$(lines | "$GREP" -n "$mention_re")
 EOF
-fi
 
-# Inline table at top level: toolchain = { version = "..." }
-if printf '%s\n' "$top" | grep -q "^${ws}toolchain$ws="; then
-  inner=$(printf '%s\n' "$top" | sed -n "s/^${ws}toolchain$ws=$ws{\(.*\)}$tail_ok\$/\1/p")
-  [ -n "$inner" ] || unreadable
-  case $inner in *,*) unreadable ;; esac
-  kv=$(printf '%s\n' "$inner" | sed -n "s/^$ws\(version\|channel\|path\)$ws=$ws$str$ws\$/\1 \2/p")
-  [ -n "$kv" ] || unreadable
-  record "${kv%% *}" "${kv#* }"
-fi
+# Anything else that names `toolchain` is a spelling we don't understand.
+while IFS=: read -r n _; do
+  [ -n "$n" ] || continue
+  case $accepted in
+    *" $n "*) ;;
+    *) unreadable ;;
+  esac
+done <<EOF
+$(lines | "$GREP" -n "$mention_re")
+EOF
 
 # --- Apply the policy -------------------------------------------------------
 
@@ -165,7 +214,7 @@ case $sel_kind in
   path)
     case $sel_value in
       /*) run_path "$sel_value" "$@" ;;
-      *) run_path "$(dirname "$manifest")/$sel_value" "$@" ;;
+      *) run_path "$("$DIRNAME" "$manifest")/$sel_value" "$@" ;;
     esac
     ;;
 esac

@@ -2,6 +2,9 @@
   lib,
   stdenvNoCC,
   replaceVars,
+  coreutils,
+  gnugrep,
+  gnused,
   baml-cli,
   callPackage,
 }:
@@ -21,6 +24,9 @@ stdenvNoCC.mkDerivation {
       replaceVars ./baml.sh {
         inherit (baml-cli) version;
         cli = "${baml-cli}/bin/baml-cli";
+        sed = lib.getExe gnused;
+        grep = lib.getExe gnugrep;
+        dirname = "${coreutils}/bin/dirname";
       }
     } $out/bin/baml
     runHook postInstall
