@@ -42,7 +42,14 @@ rustPlatform.buildRustPackage (finalAttrs: {
   nativeInstallCheckInputs = [ versionCheckHook ];
   doInstallCheck = true;
 
-  passthru.updateScript = nix-update-script { };
+  # Upstream also tags the new BAML language (baml-wrapper-*,
+  # baml-language-*); only follow BAML v0 releases.
+  passthru.updateScript = nix-update-script {
+    extraArgs = [
+      "--version-regex"
+      "^v(0\\.[0-9.]+)$"
+    ];
+  };
 
   meta = {
     description = "CLI for BAML, a language for building reliable AI workflows and agents";

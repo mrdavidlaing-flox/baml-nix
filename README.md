@@ -16,8 +16,9 @@ nix flake check -L          # version check, offline generate+import, abi3 impor
 Use the `overlays.default` overlay to get `pkgs.baml-cli` and
 `python3Packages.baml-py` in your own nixpkgs.
 
-Supported systems: x86_64-linux and aarch64-darwin (tested), plus
-aarch64-linux (evaluates; untested). nixos-unstable no longer supports
+Supported systems: x86_64-linux (tested); aarch64-darwin (pending
+[docs/macos-checklist.md](docs/macos-checklist.md)); aarch64-linux
+(evaluates; untested). nixos-unstable no longer supports
 x86_64-darwin.
 
 - [examples/flox-python](examples/flox-python): a Flox environment using these packages

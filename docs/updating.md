@@ -6,19 +6,20 @@
 1. Bump the version and both hashes (`hash` and `cargoHash`):
 
    ```sh
-   nix run nixpkgs#nix-update -- --flake baml-cli --version <X.Y.Z>
+   nix run nixpkgs#nix-update -- --flake baml-cli --version-regex '^v(0\.[0-9.]+)$'
    ```
+
+   GitHub's release/tag feeds only list the latest few entries, and
+   upstream's new-language tags (`baml-language-source-*`) often crowd out
+   the v0 releases. If you see `No version matched the regex`, name the
+   release explicitly: `... -- --flake baml-cli --version X.Y.Z`.
 
    To do it by hand instead: set `version`, set both hashes to
    `lib.fakeHash`, then copy the `got:` values from `nix build .#baml-cli`.
 
-2. Update the generator version pins, which must equal the package version:
-   - `pkgs/python-modules/baml-py/tests/fixture/baml_src/generators.baml`
-   - `examples/flox-python/baml_src/generators.baml`
-
-   Then update the literal `0.226.3` in
-   `pkgs/baml-cli/tests/version.nix` and
-   `pkgs/python-modules/baml-py/tests/generate.nix`.
+2. Update the demo's generator pin, which must equal the package version:
+   `examples/flox-python/baml_src/generators.baml`. The package tests take
+   the version from the package, so they need no edits.
 
 3. Verify:
 

@@ -44,7 +44,9 @@ Notes for reviewers:
   OpenSSL. RUSTFLAGS gets `--cfg tracing_unstable`, as upstream's
   `engine/.cargo/config.toml` sets.
 - `baml-py` inherits `version`/`src`/`cargoDeps` from `baml-cli`, so a bump
-  only touches `pkgs/by-name/ba/baml-cli`.
+  only touches `pkgs/by-name/ba/baml-cli`. The passthru tests take the
+  version from the package. `updateScript` only follows `v0.*` tags, because
+  upstream also tags the newer BAML language (`baml-wrapper-*`).
 - `baml-cli` has `doCheck = false` because the crate has no unit tests.
   Coverage comes from `versionCheckHook` and `python3Packages.baml-py.tests`:
   - `generate` runs `baml-cli generate` on a small project in the sandbox
