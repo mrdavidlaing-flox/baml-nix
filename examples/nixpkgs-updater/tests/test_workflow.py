@@ -118,3 +118,15 @@ def test_unknown_attr_reported_and_loop_continues(repo):
     outcomes = run(["nope", "hello"], repo, client, checks(OK), locate_hello)
     assert [(o.attr, o.status) for o in outcomes] == [("nope", "failed"), ("hello", "updated")]
     assert "not found" in outcomes[0].detail
+
+
+def test_missing_api_key_fails_before_worktree(monkeypatch, capsys):
+    from updater import __main__ as cli
+    from updater import workflow
+
+    monkeypatch.delenv("OPENROUTER_API_KEY", raising=False)
+    created = []
+    monkeypatch.setattr(workflow, "create_worktree", lambda *a: created.append(a))
+    assert cli.main(["hello"]) == 2
+    assert capsys.readouterr().err.strip() == "error: OPENROUTER_API_KEY is not set"
+    assert created == []
