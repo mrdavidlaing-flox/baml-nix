@@ -130,3 +130,41 @@ def test_missing_api_key_fails_before_worktree(monkeypatch, capsys):
     assert cli.main(["hello"]) == 2
     assert capsys.readouterr().err.strip() == "error: OPENROUTER_API_KEY is not set"
     assert created == []
+
+
+def test_failed_package_does_not_undo_earlier_success(repo):
+    import subprocess
+
+    shared = "pkgs/top-level/versions.nix"
+    (repo / "pkgs/top-level").mkdir(parents=True)
+    (repo / shared).write_text('{ hello = "1.0"; world = "2.0"; }\n')
+    subprocess.run(["git", "-C", str(repo), "add", "."], check=True)
+    subprocess.run(["git", "-C", str(repo), "commit", "-q", "-m", "shared"], check=True)
+
+    def edit(find, replace):
+        return baml_sdk.Edit(path=shared, find=find, replace=replace)
+
+    hello_plan = a_plan(edits=[edit('hello = "1.0"', 'hello = "1.1"')])
+    world_plan = a_plan(edits=[edit('world = "2.0"', 'world = "2.1"'), baml_sdk.Edit(path="pkgs/new.nix", find="", replace="x")])
+
+    class TwoPackages(FakeClient):
+        def plan_update(self, attr, current_version, package_nix, package_path, previous_errors):
+            self.calls.append(dict(attr=attr, package_nix=package_nix, previous_errors=list(previous_errors)))
+            return hello_plan if attr == "hello" else world_plan
+
+        def apply_update(self, plan, tools):
+            result = super().apply_update(plan, tools)
+            if plan is world_plan:
+                tools.write_file("pkgs/new.nix", "created by a failed attempt")
+            return result
+
+    def locate(attr):
+        return shared, "1.0"
+
+    def check(attr):
+        return OK if attr == "hello" else failed("world does not build")
+
+    outcomes = run(["hello", "world"], repo, TwoPackages(repo, []), check, locate)
+    assert [(o.attr, o.status) for o in outcomes] == [("hello", "updated"), ("world", "failed")]
+    assert (repo / shared).read_text() == '{ hello = "1.1"; world = "2.0"; }\n'
+    assert not (repo / "pkgs/new.nix").exists()

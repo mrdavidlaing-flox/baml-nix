@@ -44,17 +44,71 @@ Check = Callable[[str], baml_sdk.CommandResult]
 Locate = Callable[[str], tuple[str, str]]
 
 
-def restore(worktree: Path, tools: Tools, paths: set[str]) -> None:
-    """Undo edits from a failed attempt (Python does this, not the model)."""
-    for path in sorted(paths):
-        try:
-            tools.resolve(path)
-        except ToolRefused:
-            continue
-        subprocess.run(
-            ["git", "-C", str(worktree), "checkout", "--", path],
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
+def changed_paths(worktree: Path) -> set[str]:
+    """Paths git sees as modified, added or untracked in the worktree."""
+    out = subprocess.run(
+        ["git", "-C", str(worktree), "status", "--porcelain=v1", "-z", "--untracked-files=all"],
+        stdout=subprocess.PIPE,
+        check=True,
+    ).stdout.decode()
+    entries = out.split("\0")
+    paths: set[str] = set()
+    i = 0
+    while i < len(entries):
+        entry = entries[i]
+        if len(entry) > 3:
+            paths.add(entry[3:])
+            if entry[0] in "RC":  # renames/copies carry the source path next
+                i += 1
+        i += 1
+    return paths
+
+
+class Snapshot:
+    """The worktree's changed files when a package's attempts began.
+
+    Rolling back restores exactly this state, so a failed package can't undo
+    an earlier package's successful edits (e.g. to a shared file), and files
+    it created are removed. Python does this, not the model.
+    """
+
+    def __init__(self, worktree: Path, tools: Tools):
+        self.worktree = worktree
+        self.tools = tools
+        self.files: dict[str, bytes | None] = {}
+        for path in changed_paths(worktree):
+            target = worktree / path
+            self.files[path] = target.read_bytes() if target.is_file() else None
+
+    def restore(self, touched: set[str]) -> None:
+        for path in sorted(changed_paths(self.worktree) | set(self.files) | touched):
+            try:
+                target = self.tools.resolve(path)
+            except ToolRefused:
+                continue
+            if path in self.files:
+                content = self.files[path]
+                if content is None:
+                    target.unlink(missing_ok=True)
+                else:
+                    target.write_bytes(content)
+            elif self._tracked(path):
+                subprocess.run(
+                    ["git", "-C", str(self.worktree), "checkout", "HEAD", "--", path],
+                    stdout=subprocess.DEVNULL,
+                    stderr=subprocess.DEVNULL,
+                )
+            elif target.is_file() or target.is_symlink():
+                target.unlink()
+
+    def _tracked(self, path: str) -> bool:
+        return (
+            subprocess.run(
+                ["git", "-C", str(self.worktree), "ls-files", "--error-unmatch", "--", path],
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+            ).returncode
+            == 0
         )
 
 
@@ -78,9 +132,10 @@ def run(
         errors: list[str] = []
         touched = {path}
         outcome = None
+        snapshot = Snapshot(worktree, tools)
         for attempt in range(1, max_attempts + 1):
             if attempt > 1:
-                restore(worktree, tools, touched)
+                snapshot.restore(touched)
             try:
                 plan = client.plan_update(attr, version, tools.read_file(path), path, errors)
             except Exception as e:  # LLM, network or parse failure: count it as an attempt
@@ -105,7 +160,7 @@ def run(
             errors.append(f"attempt {attempt}: nix build of {attr} failed:\n{built.output}")
 
         if outcome is None:
-            restore(worktree, tools, touched)
+            snapshot.restore(touched)
             outcome = Outcome(attr, version, None, "failed", errors[-1] if errors else "no attempts made")
         outcomes.append(outcome)
     return outcomes
