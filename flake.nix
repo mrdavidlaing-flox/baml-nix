@@ -29,14 +29,17 @@
       # into nixpkgs unchanged.
       overlays.default = final: prev: {
         baml-cli = final.callPackage ./pkgs/baml-cli/package.nix { };
+        baml = final.callPackage ./pkgs/baml/package.nix { };
       };
 
       packages = forAllSystems (pkgs: {
-        inherit (pkgs) baml-cli;
+        inherit (pkgs) baml baml-cli;
+        default = pkgs.baml;
       });
 
       checks = forAllSystems (pkgs: {
         baml-cli-version = pkgs.callPackage ./pkgs/baml-cli/tests/version.nix { };
+        baml-policy = pkgs.baml.tests.policy;
       });
     };
 }
