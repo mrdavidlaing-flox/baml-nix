@@ -29,15 +29,23 @@
       # into nixpkgs unchanged.
       overlays.default = final: prev: {
         baml-cli = final.callPackage ./pkgs/baml-cli/package.nix { };
+        pythonPackagesExtensions = prev.pythonPackagesExtensions ++ [
+          (pyFinal: pyPrev: {
+            baml-py = pyFinal.callPackage ./pkgs/python-modules/baml-py { };
+          })
+        ];
       };
 
       packages = forAllSystems (pkgs: {
         inherit (pkgs) baml-cli;
+        inherit (pkgs.python3Packages) baml-py;
         default = pkgs.baml-cli;
       });
 
       checks = forAllSystems (pkgs: {
         baml-cli-version = pkgs.callPackage ./pkgs/baml-cli/tests/version.nix { };
+        baml-py-generate = pkgs.python3Packages.baml-py.tests.generate;
+        baml-py-abi3 = pkgs.python3Packages.baml-py.tests.abi3;
       });
     };
 }
