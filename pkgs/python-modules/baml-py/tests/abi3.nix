@@ -12,9 +12,15 @@
 
 runCommand "baml-py-abi3-test" { } ''
   export PYTHONPATH=${baml-py}/${python.sitePackages}
-  ${lib.concatMapStringsSep "\n" (py: ''
-    echo "importing baml_py with ${py.name}"
-    ${py.interpreter} -c "import baml_py; print(baml_py.__file__)"
-  '') [ pkgs.python313 pkgs.python314 ]}
+  ${lib.concatMapStringsSep "\n"
+    (py: ''
+      echo "importing baml_py with ${py.name}"
+      ${py.interpreter} -c "import baml_py; print(baml_py.__file__)"
+    '')
+    [
+      pkgs.python313
+      pkgs.python314
+    ]
+  }
   touch $out
 ''

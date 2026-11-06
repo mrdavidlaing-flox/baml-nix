@@ -35,7 +35,8 @@ rustPlatform.buildRustPackage (finalAttrs: {
 
   buildInputs = lib.optionals stdenv.hostPlatform.isDarwin [ libiconv ];
 
-  # Many workspace tests need network access or LLM API keys.
+  # The baml-cli crate itself has no tests; behaviour is covered by
+  # versionCheckHook here and python3Packages.baml-py.tests.generate.
   doCheck = false;
 
   nativeInstallCheckInputs = [ versionCheckHook ];
