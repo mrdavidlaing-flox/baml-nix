@@ -90,3 +90,78 @@ def test_failing_or_refused_command_stops(repo: Path):
     assert result.steps_done == [f"edit {HELLO}"]
     assert result.failed_step == "run sh -c echo hi"
     assert "not allowed" in result.failed_output
+
+
+DANGEROUS = [
+    # git: write outside, read anything, run diff drivers
+    ["git", "diff", "--output=/tmp/x", "HEAD"],
+    ["git", "diff", "--output", "/tmp/x"],
+    ["git", "diff", "--no-index", "/dev/null", "/etc/passwd"],
+    ["git", "diff", "--ext-diff"],
+    ["git", "diff", "--", "../outside.txt"],
+    ["git", "status", "--untracked-files=all", "--ignored", "-z", "--porcelain", "x"],
+    # nix-update: run code, commit, write elsewhere
+    ["nix-update", "--use-update-script", "hello"],
+    ["nix-update", "-u", "hello"],
+    ["nix-update", "--run", "sh", "hello"],
+    ["nix-update", "--shell", "hello"],
+    ["nix-update", "--commit", "hello"],
+    ["nix-update", "--override-filename", "/etc/x", "hello"],
+    ["nix-update", "hello", "other"],
+    # nix build: arbitrary expressions, impurity, links outside, unsafe options
+    ["nix", "build", "--expr", "1"],
+    ["nix", "build", "--impure", "--file", ".", "hello"],
+    ["nix", "build", "--out-link", "/tmp/x", "--file", ".", "hello"],
+    ["nix", "build", "--option", "allow-unsafe-native-code-during-evaluation", "true", "--file", ".", "hello"],
+    ["nix", "build", "--file", "/etc", "hello"],
+    ["nix", "build", ".#hello"],
+    ["nix", "build", "--file", ".", "--", "-x"],
+    # prefetchers: local files, non-https, unknown flags
+    ["nix-prefetch-url", "file:///etc/passwd"],
+    ["nix-prefetch-url", "http://example.invalid/x.tar.gz"],
+    ["nix-prefetch-url", "--name", "x", "https://example.invalid/x.tar.gz"],
+    ["nix-prefetch-git", "file:///home"],
+    ["nix-prefetch-git", "--builder", "https://example.invalid/x.git"],
+]
+
+SAFE = [
+    ["nix", "build", "--file", ".", "hello"],
+    ["nix", "build", "--no-link", "-L", "--file", ".", "python3Packages.requests"],
+    ["nix-update", "hello"],
+    ["nix-update", "--version=1.2.3", "hello"],
+    ["nix-update", "--version", "1.2.3", "hello"],
+    ["nix-prefetch-url", "https://example.invalid/x.tar.gz"],
+    ["nix-prefetch-url", "--unpack", "https://example.invalid/x.tar.gz"],
+    ["nix-prefetch-git", "https://example.invalid/x.git", "v1.2.3"],
+    ["nix-prefetch-git", "--rev", "v1.2.3", "--fetch-submodules", "https://example.invalid/x.git"],
+    ["git", "diff"],
+    ["git", "diff", "--stat"],
+    ["git", "diff", "--", HELLO],
+    ["git", "status", "--short"],
+]
+
+
+def test_allowlist_rejects_dangerous_shapes(repo: Path):
+    tools = Tools(repo)
+    for argv in DANGEROUS:
+        assert tools.refusal(argv) is not None, argv
+        assert tools.run_command(argv).exit_code == 126, argv
+
+
+def test_allowlist_accepts_safe_shapes(repo: Path):
+    tools = Tools(repo)
+    for argv in SAFE:
+        assert tools.refusal(argv) is None, argv
+
+
+def test_git_diff_output_flag_cannot_write(repo: Path, tmp_path: Path):
+    target = tmp_path / "clobbered"
+    Tools(repo).run_command(["git", "diff", f"--output={target}", "HEAD"])
+    assert not target.exists()
+
+
+def test_git_internals_refused(repo: Path):
+    tools = Tools(repo)
+    for path in [".git", ".git/config", "pkgs/../.git/HEAD"]:
+        with pytest.raises(ToolRefused):
+            tools.write_file(path, "x")

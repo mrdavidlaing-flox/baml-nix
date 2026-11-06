@@ -38,9 +38,14 @@ function PlanUpdate(
       including indentation. Prefer whole lines.
     - To get a new hash, set it to lib.fakeHash in an edit; the build error
       reports the real hash and you will see it in previous_errors.
-    - Commands may only start with: nix build, nix-prefetch-url,
-      nix-prefetch-git, nix-update, git diff, git status. Anything else is
-      refused. Leave commands empty if the edits are enough.
+    - Commands must have exactly one of these shapes; anything else (any
+      other flag) is refused. Leave commands empty if the edits are enough.
+        nix build [--no-link] [-L] --file . ATTR
+        nix-update [--version=V] ATTR
+        nix-prefetch-url [--unpack] https://URL
+        nix-prefetch-git [--rev REV] [--fetch-submodules] https://URL [REV]
+        git diff [--stat] [-- PATH...]
+        git status [--short]
     - If the package is already at the latest release, set needs_update to
       false and leave edits and commands empty.
     - Note anything risky (tag naming traps, prereleases, major-version

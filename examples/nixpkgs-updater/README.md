@@ -43,13 +43,28 @@ Each package costs up to three `PlanUpdate` calls; GPT-6 Luna is cheap
 
 - **Files:** paths that resolve outside the worktree, including through
   symlinks, are refused.
-- **Commands:** only `nix build`, `nix-prefetch-url`, `nix-prefetch-git`,
-  `nix-update`, `git diff` and `git status` run. Anything else returns exit
-  126 to the plan, and the attempt fails.
+- **Commands:** only these exact shapes run, and no other flags:
+  - `nix build [--no-link] [-L] --file . ATTR`
+  - `nix-update [--version=V] ATTR`
+  - `nix-prefetch-url [--unpack] https://URL`
+  - `nix-prefetch-git [--rev REV] [--fetch-submodules] https://URL [REV]`
+  - `git diff [--stat] [-- PATH...]`, which always runs with
+    `--no-ext-diff --no-textconv`
+  - `git status [--short]`
+
+  Anything else returns exit 126 to the plan, and the attempt fails. Flags
+  such as `git diff --output`, `nix-update --run`/`--commit` and
+  `nix build --expr`/`--impure` are refused by design.
+- **Git's own files:** reading or writing anything under `.git` is refused.
 - **Edits:** each edit's `find` text must occur exactly once, or the step
   fails and nothing is written.
 - **Retries:** before each retry, the workflow, not the model, restores the
   files the last attempt touched.
+- **What's still trusted:** the workflow's own check runs
+  `nix build --file <worktree> ATTR` on files the model edited. That
+  evaluates Nix code the model wrote. Builds are sandboxed, but evaluation
+  can read local files. Review the diff before reusing anything, and run
+  the demo on a machine where that's acceptable.
 
 ## Tests
 
