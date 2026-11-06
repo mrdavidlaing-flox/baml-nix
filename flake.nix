@@ -30,16 +30,23 @@
       overlays.default = final: prev: {
         baml-cli = final.callPackage ./pkgs/baml-cli/package.nix { };
         baml = final.callPackage ./pkgs/baml/package.nix { };
+        pythonPackagesExtensions = prev.pythonPackagesExtensions ++ [
+          (pyFinal: pyPrev: {
+            baml-bridge = pyFinal.callPackage ./pkgs/python-modules/baml-bridge { };
+          })
+        ];
       };
 
       packages = forAllSystems (pkgs: {
         inherit (pkgs) baml baml-cli;
+        inherit (pkgs.python3Packages) baml-bridge;
         default = pkgs.baml;
       });
 
       checks = forAllSystems (pkgs: {
         baml-cli-version = pkgs.callPackage ./pkgs/baml-cli/tests/version.nix { };
         baml-policy = pkgs.baml.tests.policy;
+        baml-bridge-generate = pkgs.python3Packages.baml-bridge.tests.generate;
       });
     };
 }
