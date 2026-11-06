@@ -71,7 +71,7 @@ for a different version. So the `baml` here:
 - answers `baml toolchain status`, and refuses `baml update`,
   `baml upgrade` and other `toolchain` subcommands ("managed by Nix").
 
-`baml.tests.policy` covers all of this, offline, in 18 cases.
+`baml.tests.policy` covers all of this, offline, in 31 cases.
 
 ### Notes for reviewers
 

@@ -26,9 +26,9 @@ Expected: `all checks passed!` This runs two Rust builds (the toolchain and
 the Python bridge), so allow time. The log should show:
 
 - `baml-cli-version-test> baml-cli 0.24.0`
-- `baml-policy-test>` with 18 `ok` lines
+- `baml-policy-test>` with 31 `ok` lines
 - `baml-bridge-generate-test> ok 0.24.0`
-- `nixpkgs-updater-check> 16 passed`
+- `nixpkgs-updater-check> 21 passed`
 
 ## 3. Check the binaries link only system libraries and the Nix store
 
@@ -49,7 +49,7 @@ flox activate -- bash -c 'baml generate && python -m pytest -q tests'
 flox activate -- python -m updater hello   # with OPENROUTER_API_KEY unset
 ```
 
-Expected: `16 passed`, then `error: OPENROUTER_API_KEY is not set` (exit 2).
+Expected: `21 passed`, then `error: OPENROUTER_API_KEY is not set` (exit 2).
 The first activation locks the environment, writing the git-ignored
 `.flox/env/manifest.lock`.
 
