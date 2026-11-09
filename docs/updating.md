@@ -31,7 +31,17 @@ bump starts in `pkgs/baml-cli/package.nix`.
    ```sh
    nix flake update            # optional: move to a newer nixos-unstable
    nix flake check -L
-   (cd examples/nixpkgs-updater && flox activate -- bash -c 'baml generate && python -m pytest -q tests')
+   ```
+
+5. Push, then move the demo onto the pushed packages. Its lock pins a
+   commit of `github:mrdavidlaing-flox/baml-nix`:
+
+   ```sh
+   git push
+   cd examples/nixpkgs-updater
+   flox upgrade
+   flox activate -- bash -c 'baml generate && python -m pytest -q tests'
+   git commit -m "demo: lock to new BAML" .flox/env/manifest.lock && git push
    ```
 
 ## When nixpkgs bumps python3 to a new minor version

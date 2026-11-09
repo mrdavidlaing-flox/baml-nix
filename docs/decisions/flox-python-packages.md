@@ -34,8 +34,18 @@ that directory on `PYTHONPATH`. No `python3.withPackages` wrapper is needed.
    - When the env lives inside the flake directory (`examples/flox-python`
      in this repo), any edit to the repo, the lock itself included, changes
      the narHash.
-   Hence: the demo does **not** commit `.flox/env/manifest.lock`. Each
-   machine locks on first activation.
+   Hence, while the reference was local, the demo did **not** commit
+   `.flox/env/manifest.lock`, and each machine locked on first activation.
+
+## Update (2026-11-09): GitHub reference, committed lock
+
+Once the repo had a public origin, the demo switched to
+`baml.flake = "github:mrdavidlaing-flox/baml-nix#baml"` (likewise
+`baml-bridge`). The lock now records `github:…/<commit>?narHash=…`, with no
+local paths, so it is committed and works on any machine. The catch: the
+demo now uses the *pushed* packages at the locked commit, not the working
+tree. After pushing package changes, run `flox upgrade` in the demo and
+commit the new lock (see `docs/updating.md`).
 
 ## What failed
 

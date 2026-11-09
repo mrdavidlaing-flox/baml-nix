@@ -1,5 +1,4 @@
 baml_sdk/
-.flox/env/manifest.lock
 __pycache__/
 .pytest_cache/
 .baml/

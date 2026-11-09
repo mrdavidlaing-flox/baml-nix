@@ -85,8 +85,11 @@ The same suite is the flake check `nixpkgs-updater` (`check.nix`).
 - **Running inside a coding agent.** `baml-cli` notices agent environments
   (`CLAUDECODE`, `AI_AGENT`, …), and `baml generate` then demands BAML's
   agent skill. Run `baml agent install`, or pass `--agent-skill-check off`.
-- **Flox lock file.** `.flox/env/manifest.lock` isn't committed: it records
-  the flake's absolute path and content hash. See
+- **Where BAML comes from.** The manifest installs `baml` and `baml-bridge`
+  from `github:mrdavidlaing-flox/baml-nix`, and the committed
+  `.flox/env/manifest.lock` pins one commit of it. So the demo uses the
+  *pushed* packages, not your working tree. After pushing package changes,
+  run `flox upgrade` here and commit the new lock. See
   [flox-python-packages.md](../../docs/decisions/flox-python-packages.md).
 - **Python version.** Keep `python314` in the manifest in step with the
   flake's `python3`.

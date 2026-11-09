@@ -7,13 +7,8 @@ lists what success looks like.
 ## 1. Get the repo onto the Mac
 
 ```sh
-# on the Linux machine
-git -C ~/Work/baml-nix bundle create /tmp/baml-nix.bundle --all
-# copy /tmp/baml-nix.bundle over, then on the Mac
-git clone -b main baml-nix.bundle ~/Work/baml-nix
+git clone https://github.com/mrdavidlaing-flox/baml-nix ~/Work/baml-nix
 ```
-
-Or use `rsync -a --exclude result --exclude .superpowers --exclude .baml ~/Work/baml-nix/ <mac>:Work/baml-nix/`.
 
 ## 2. Run the flake checks
 
@@ -50,8 +45,11 @@ flox activate -- python -m updater hello   # with OPENROUTER_API_KEY unset
 ```
 
 Expected: `21 passed`, then `error: OPENROUTER_API_KEY is not set` (exit 2).
-The first activation locks the environment, writing the git-ignored
-`.flox/env/manifest.lock`.
+The environment uses the committed `.flox/env/manifest.lock`, which pins
+`baml` and `baml-bridge` to a commit of
+`github:mrdavidlaing-flox/baml-nix`. On a Mac this is where those packages
+get built for aarch64-darwin for the first time. `git status` should stay
+clean.
 
 ## 5. Optional: one real run
 
