@@ -2,7 +2,7 @@
 
 Date: 2026-11-05
 Status: draft, awaiting approval (builder check done; David's answers in)
-Branch: `baml-language` (cut from `main`; the shelved v0 work stays on `baml-v0`)
+Branch: `baml-language` (cut from `main`, merged back into `main` on 2026-11-09; the shelved v0 work stays on `baml-v0`)
 
 ## Intent
 

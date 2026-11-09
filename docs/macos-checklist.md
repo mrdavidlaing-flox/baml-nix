@@ -10,7 +10,7 @@ lists what success looks like.
 # on the Linux machine
 git -C ~/Work/baml-nix bundle create /tmp/baml-nix.bundle --all
 # copy /tmp/baml-nix.bundle over, then on the Mac
-git clone -b baml-language baml-nix.bundle ~/Work/baml-nix
+git clone -b main baml-nix.bundle ~/Work/baml-nix
 ```
 
 Or use `rsync -a --exclude result --exclude .superpowers --exclude .baml ~/Work/baml-nix/ <mac>:Work/baml-nix/`.
