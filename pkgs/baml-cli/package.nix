@@ -3,6 +3,7 @@
   rustPlatform,
   fetchFromGitHub,
   pkg-config,
+  makeBinaryWrapper,
   aws-lc,
   sqlite,
   versionCheckHook,
@@ -34,7 +35,10 @@ rustPlatform.buildRustPackage (finalAttrs: {
 
   # nixpkgs' cargoSetupHook makes aws-lc-sys (via rustls) and libsqlite3-sys
   # link system libraries, found via pkg-config, instead of bundled copies.
-  nativeBuildInputs = [ pkg-config ];
+  nativeBuildInputs = [
+    pkg-config
+    makeBinaryWrapper
+  ];
   buildInputs = [
     aws-lc
     sqlite
@@ -48,6 +52,14 @@ rustPlatform.buildRustPackage (finalAttrs: {
   # agent installs). Behaviour is covered by versionCheckHook and the
   # baml and python3Packages.baml-bridge passthru tests.
   doCheck = false;
+
+  # baml-cli sends anonymous usage analytics to PostHog by default. Turn them
+  # off, as gh and glab do: DO_NOT_TRACK is upstream's only opt-out variable.
+  # --set-default keeps the user's choice: DO_NOT_TRACK=0 opts back in.
+  # `baml` runs this wrapper, so it is covered too.
+  postInstall = ''
+    wrapProgram $out/bin/baml-cli --set-default DO_NOT_TRACK 1
+  '';
 
   nativeInstallCheckInputs = [ versionCheckHook ];
   doInstallCheck = true;

@@ -98,11 +98,13 @@ for a different version. So the `baml` here:
 - **Python.** The committed protobuf stubs are 6.31.1 gencode, and they
   work with nixpkgs' protobuf 7.36: the generate test imports and calls
   through them. Python 3.14 builds and imports fine.
-- **Telemetry.** No telemetry key is embedded (upstream release builds of
-  the launcher embed one). `baml-cli` itself prints a one-time notice and
-  collects anonymous CLI usage analytics. Users opt out with
-  `DO_NOT_TRACK=1` or `baml telemetry disable`. This PR doesn't change
-  that default; reviewers may want an opinion.
+- **Telemetry is off by default.** `baml-cli` sends anonymous usage
+  analytics to PostHog unless opted out. Following `gh` and `glab`, it is
+  wrapped with `--set-default DO_NOT_TRACK 1`: `DO_NOT_TRACK` is upstream's
+  only opt-out variable, and `--set-default` leaves the choice with the
+  user (`DO_NOT_TRACK=0` opts back in). `baml` runs the wrapper, so it is
+  covered too; the check `baml-cli-telemetry` tests both cases. The
+  launcher's own telemetry key isn't relevant: the launcher isn't packaged.
 - **CA certificates.** BAML's HTTP client loads the system CA roots when it
   is created, even for plain-HTTP endpoints. Without CA roots, LLM calls
   fail with "HTTP client initialization failed". This only matters in
