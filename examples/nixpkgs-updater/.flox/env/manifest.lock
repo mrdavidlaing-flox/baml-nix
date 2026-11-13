@@ -28,13 +28,13 @@
       "description": "Framework for writing tests",
       "install_id": "pytest",
       "license": "MIT",
-      "locked_url": "https://github.com/flox/nixpkgs?rev=f4a03c008967841f2a0b3cb7c436fc6fc31671f6",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=177d0540942fb205af6993b1d5fa0b57799e09f8",
       "name": "python3.14-pytest-9.1.1",
       "pname": "pytest",
-      "rev": "f4a03c008967841f2a0b3cb7c436fc6fc31671f6",
-      "rev_count": 1113206,
-      "rev_date": "2026-11-07T09:04:50Z",
-      "scrape_date": "2026-11-09T05:50:26.901851Z",
+      "rev": "177d0540942fb205af6993b1d5fa0b57799e09f8",
+      "rev_count": 1114946,
+      "rev_date": "2026-11-09T02:42:03Z",
+      "scrape_date": "2026-11-12T05:47:25.797445Z",
       "stabilities": [
         "unstable"
       ],
@@ -59,13 +59,13 @@
       "description": "Framework for writing tests",
       "install_id": "pytest",
       "license": "MIT",
-      "locked_url": "https://github.com/flox/nixpkgs?rev=f4a03c008967841f2a0b3cb7c436fc6fc31671f6",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=177d0540942fb205af6993b1d5fa0b57799e09f8",
       "name": "python3.14-pytest-9.1.1",
       "pname": "pytest",
-      "rev": "f4a03c008967841f2a0b3cb7c436fc6fc31671f6",
-      "rev_count": 1113206,
-      "rev_date": "2026-11-07T09:04:50Z",
-      "scrape_date": "2026-11-09T06:19:04.699621Z",
+      "rev": "177d0540942fb205af6993b1d5fa0b57799e09f8",
+      "rev_count": 1114946,
+      "rev_date": "2026-11-09T02:42:03Z",
+      "scrape_date": "2026-11-12T06:13:36.856590Z",
       "stabilities": [
         "unstable"
       ],
@@ -90,13 +90,13 @@
       "description": "Framework for writing tests",
       "install_id": "pytest",
       "license": "MIT",
-      "locked_url": "https://github.com/flox/nixpkgs?rev=f4a03c008967841f2a0b3cb7c436fc6fc31671f6",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=177d0540942fb205af6993b1d5fa0b57799e09f8",
       "name": "python3.14-pytest-9.1.1",
       "pname": "pytest",
-      "rev": "f4a03c008967841f2a0b3cb7c436fc6fc31671f6",
-      "rev_count": 1113206,
-      "rev_date": "2026-11-07T09:04:50Z",
-      "scrape_date": "2026-11-09T06:50:20.189287Z",
+      "rev": "177d0540942fb205af6993b1d5fa0b57799e09f8",
+      "rev_count": 1114946,
+      "rev_date": "2026-11-09T02:42:03Z",
+      "scrape_date": "2026-11-12T06:42:18.279630Z",
       "stabilities": [
         "unstable"
       ],
@@ -121,19 +121,20 @@
       "description": "High-level dynamically-typed programming language",
       "install_id": "python314",
       "license": "Python-2.0",
-      "locked_url": "https://github.com/flox/nixpkgs?rev=f4a03c008967841f2a0b3cb7c436fc6fc31671f6",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=177d0540942fb205af6993b1d5fa0b57799e09f8",
       "name": "python3-3.14.10",
       "pname": "python314",
-      "rev": "f4a03c008967841f2a0b3cb7c436fc6fc31671f6",
-      "rev_count": 1113206,
-      "rev_date": "2026-11-07T09:04:50Z",
-      "scrape_date": "2026-11-09T05:50:26.855666Z",
+      "rev": "177d0540942fb205af6993b1d5fa0b57799e09f8",
+      "rev_count": 1114946,
+      "rev_date": "2026-11-09T02:42:03Z",
+      "scrape_date": "2026-11-12T05:47:25.756313Z",
       "stabilities": [
         "unstable"
       ],
       "unfree": false,
       "version": "python3-3.14.10",
       "outputs_to_install": [
+        "out",
         "out"
       ],
       "outputs": {
@@ -150,19 +151,20 @@
       "description": "High-level dynamically-typed programming language",
       "install_id": "python314",
       "license": "Python-2.0",
-      "locked_url": "https://github.com/flox/nixpkgs?rev=f4a03c008967841f2a0b3cb7c436fc6fc31671f6",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=177d0540942fb205af6993b1d5fa0b57799e09f8",
       "name": "python3-3.14.10",
       "pname": "python314",
-      "rev": "f4a03c008967841f2a0b3cb7c436fc6fc31671f6",
-      "rev_count": 1113206,
-      "rev_date": "2026-11-07T09:04:50Z",
-      "scrape_date": "2026-11-09T06:19:04.663839Z",
+      "rev": "177d0540942fb205af6993b1d5fa0b57799e09f8",
+      "rev_count": 1114946,
+      "rev_date": "2026-11-09T02:42:03Z",
+      "scrape_date": "2026-11-12T06:13:36.820481Z",
       "stabilities": [
         "unstable"
       ],
       "unfree": false,
       "version": "python3-3.14.10",
       "outputs_to_install": [
+        "out",
         "out",
         "out"
       ],
@@ -181,19 +183,20 @@
       "description": "High-level dynamically-typed programming language",
       "install_id": "python314",
       "license": "Python-2.0",
-      "locked_url": "https://github.com/flox/nixpkgs?rev=f4a03c008967841f2a0b3cb7c436fc6fc31671f6",
+      "locked_url": "https://github.com/flox/nixpkgs?rev=177d0540942fb205af6993b1d5fa0b57799e09f8",
       "name": "python3-3.14.10",
       "pname": "python314",
-      "rev": "f4a03c008967841f2a0b3cb7c436fc6fc31671f6",
-      "rev_count": 1113206,
-      "rev_date": "2026-11-07T09:04:50Z",
-      "scrape_date": "2026-11-09T06:50:20.156255Z",
+      "rev": "177d0540942fb205af6993b1d5fa0b57799e09f8",
+      "rev_count": 1114946,
+      "rev_date": "2026-11-09T02:42:03Z",
+      "scrape_date": "2026-11-12T06:42:18.248148Z",
       "stabilities": [
         "unstable"
       ],
       "unfree": false,
       "version": "python3-3.14.10",
       "outputs_to_install": [
+        "out",
         "out",
         "out"
       ],
@@ -207,12 +210,12 @@
     },
     {
       "install_id": "baml",
-      "locked-url": "github:mrdavidlaing-flox/baml-nix/ec3e914b321df287d92a33fd37067494e5a59b1f?narHash=sha256-1gnFLEcD7/s254s9Rad/HQ4rO0XEVi59on4M6g/qhi8%3D",
+      "locked-url": "github:mrdavidlaing-flox/baml-nix/b4b6d5b8aef18418696f6f9806720705f2521a1b?narHash=sha256-kSN7LMP0z%2BCwhmy9tE48a%2BfEhZ5ckVHCtexihcM4krk%3D",
       "flake-description": "The BAML language (baml, baml-cli, python3Packages.baml-bridge) packaged nixpkgs-style",
       "locked-flake-attr-path": "packages.aarch64-darwin.baml",
-      "derivation": "/nix/store/4lmvpifq4a49hr8xx14kvvb4kvqs1ia2-baml-0.24.0.drv",
+      "derivation": "/nix/store/ahszw0v1mqcxfzfrzgc60zmd5xwsrvff-baml-0.25.2.drv",
       "outputs": {
-        "out": "/nix/store/1j6snc5s10yvk42xypf8nbxrxbbmxdpz-baml-0.24.0"
+        "out": "/nix/store/0hw7sj1jqd1lqn0kdicismb0rn861irg-baml-0.25.2"
       },
       "output-names": [
         "out"
@@ -223,9 +226,9 @@
       "requested-outputs-to-install": [],
       "package-system": "aarch64-darwin",
       "system": "aarch64-darwin",
-      "name": "baml-0.24.0",
+      "name": "baml-0.25.2",
       "pname": "baml",
-      "version": "0.24.0",
+      "version": "0.25.2",
       "description": "BAML, a programming language for building agents",
       "licenses": [
         "Apache-2.0"
@@ -236,12 +239,12 @@
     },
     {
       "install_id": "baml",
-      "locked-url": "github:mrdavidlaing-flox/baml-nix/ec3e914b321df287d92a33fd37067494e5a59b1f?narHash=sha256-1gnFLEcD7/s254s9Rad/HQ4rO0XEVi59on4M6g/qhi8%3D",
+      "locked-url": "github:mrdavidlaing-flox/baml-nix/b4b6d5b8aef18418696f6f9806720705f2521a1b?narHash=sha256-kSN7LMP0z%2BCwhmy9tE48a%2BfEhZ5ckVHCtexihcM4krk%3D",
       "flake-description": "The BAML language (baml, baml-cli, python3Packages.baml-bridge) packaged nixpkgs-style",
       "locked-flake-attr-path": "packages.aarch64-linux.baml",
-      "derivation": "/nix/store/30ffjpd1dwsh16dpcj6jg2i74bgx8hm9-baml-0.24.0.drv",
+      "derivation": "/nix/store/57lri1nc1r1262qp98ciznvzamarv0pl-baml-0.25.2.drv",
       "outputs": {
-        "out": "/nix/store/2p5pdqmcvc3j5c38jjk29gk80yd3s61y-baml-0.24.0"
+        "out": "/nix/store/m43z2s8mdyardclj7ddpbkcbmqgakdww-baml-0.25.2"
       },
       "output-names": [
         "out"
@@ -252,9 +255,9 @@
       "requested-outputs-to-install": [],
       "package-system": "aarch64-linux",
       "system": "aarch64-linux",
-      "name": "baml-0.24.0",
+      "name": "baml-0.25.2",
       "pname": "baml",
-      "version": "0.24.0",
+      "version": "0.25.2",
       "description": "BAML, a programming language for building agents",
       "licenses": [
         "Apache-2.0"
@@ -265,12 +268,12 @@
     },
     {
       "install_id": "baml",
-      "locked-url": "github:mrdavidlaing-flox/baml-nix/ec3e914b321df287d92a33fd37067494e5a59b1f?narHash=sha256-1gnFLEcD7/s254s9Rad/HQ4rO0XEVi59on4M6g/qhi8%3D",
+      "locked-url": "github:mrdavidlaing-flox/baml-nix/b4b6d5b8aef18418696f6f9806720705f2521a1b?narHash=sha256-kSN7LMP0z%2BCwhmy9tE48a%2BfEhZ5ckVHCtexihcM4krk%3D",
       "flake-description": "The BAML language (baml, baml-cli, python3Packages.baml-bridge) packaged nixpkgs-style",
       "locked-flake-attr-path": "packages.x86_64-linux.baml",
-      "derivation": "/nix/store/wjqnh8x5fjgb5axrmxry63zj76zjxljx-baml-0.24.0.drv",
+      "derivation": "/nix/store/wadr09fmfhk46vk20mdzvi5pnsn5f9ra-baml-0.25.2.drv",
       "outputs": {
-        "out": "/nix/store/sxgdfr44xm9x21gfvl37lsyml18p6scv-baml-0.24.0"
+        "out": "/nix/store/m5fb4dwqwdsqrvz5n8zpq6wxv5w1rw6w-baml-0.25.2"
       },
       "output-names": [
         "out"
@@ -281,9 +284,9 @@
       "requested-outputs-to-install": [],
       "package-system": "x86_64-linux",
       "system": "x86_64-linux",
-      "name": "baml-0.24.0",
+      "name": "baml-0.25.2",
       "pname": "baml",
-      "version": "0.24.0",
+      "version": "0.25.2",
       "description": "BAML, a programming language for building agents",
       "licenses": [
         "Apache-2.0"
@@ -294,13 +297,13 @@
     },
     {
       "install_id": "baml-bridge",
-      "locked-url": "github:mrdavidlaing-flox/baml-nix/ec3e914b321df287d92a33fd37067494e5a59b1f?narHash=sha256-1gnFLEcD7/s254s9Rad/HQ4rO0XEVi59on4M6g/qhi8%3D",
+      "locked-url": "github:mrdavidlaing-flox/baml-nix/b4b6d5b8aef18418696f6f9806720705f2521a1b?narHash=sha256-kSN7LMP0z%2BCwhmy9tE48a%2BfEhZ5ckVHCtexihcM4krk%3D",
       "flake-description": "The BAML language (baml, baml-cli, python3Packages.baml-bridge) packaged nixpkgs-style",
       "locked-flake-attr-path": "packages.aarch64-darwin.baml-bridge",
-      "derivation": "/nix/store/48bshwwisq7l8rxpy75nahshlbwl88yx-python3.14-baml-bridge-0.24.0.drv",
+      "derivation": "/nix/store/6c2fbhhi2acviab82675lwfzyjl72ff7-python3.14-baml-bridge-0.25.2.drv",
       "outputs": {
-        "dist": "/nix/store/p58j55cayh1pr1z6rkrmpc8kmz3gbr4d-python3.14-baml-bridge-0.24.0-dist",
-        "out": "/nix/store/gw2ahxq6gzkr1hsn3z3jmf47miyxcw9c-python3.14-baml-bridge-0.24.0"
+        "dist": "/nix/store/8b19xbyn1m5v382qpyxyb38311x63kd6-python3.14-baml-bridge-0.25.2-dist",
+        "out": "/nix/store/gbmf9ad6c4zj4nxn16k4j36ym29xa405-python3.14-baml-bridge-0.25.2"
       },
       "output-names": [
         "out",
@@ -312,9 +315,9 @@
       "requested-outputs-to-install": [],
       "package-system": "aarch64-darwin",
       "system": "aarch64-darwin",
-      "name": "python3.14-baml-bridge-0.24.0",
+      "name": "python3.14-baml-bridge-0.25.2",
       "pname": "baml-bridge",
-      "version": "0.24.0",
+      "version": "0.25.2",
       "description": "Python runtime for SDKs generated from BAML",
       "licenses": [
         "Apache-2.0"
@@ -325,13 +328,13 @@
     },
     {
       "install_id": "baml-bridge",
-      "locked-url": "github:mrdavidlaing-flox/baml-nix/ec3e914b321df287d92a33fd37067494e5a59b1f?narHash=sha256-1gnFLEcD7/s254s9Rad/HQ4rO0XEVi59on4M6g/qhi8%3D",
+      "locked-url": "github:mrdavidlaing-flox/baml-nix/b4b6d5b8aef18418696f6f9806720705f2521a1b?narHash=sha256-kSN7LMP0z%2BCwhmy9tE48a%2BfEhZ5ckVHCtexihcM4krk%3D",
       "flake-description": "The BAML language (baml, baml-cli, python3Packages.baml-bridge) packaged nixpkgs-style",
       "locked-flake-attr-path": "packages.aarch64-linux.baml-bridge",
-      "derivation": "/nix/store/60l79s554wyyflp16prjjilhgjxha4gy-python3.14-baml-bridge-0.24.0.drv",
+      "derivation": "/nix/store/jlshrm6sr8hi5ki0dqgl3dpah7g75pcm-python3.14-baml-bridge-0.25.2.drv",
       "outputs": {
-        "dist": "/nix/store/9gz0lpwlczpwj93cqlzfg81c7z35xw7a-python3.14-baml-bridge-0.24.0-dist",
-        "out": "/nix/store/0jc0gmw3fcw5l4zjdqajzk6jvk9sd5ma-python3.14-baml-bridge-0.24.0"
+        "dist": "/nix/store/x70p8x36884bb7rfpjqh2yddrapjlirq-python3.14-baml-bridge-0.25.2-dist",
+        "out": "/nix/store/xakwlcg8r6wxfzxdxm0fdwphks80c5b7-python3.14-baml-bridge-0.25.2"
       },
       "output-names": [
         "out",
@@ -343,9 +346,9 @@
       "requested-outputs-to-install": [],
       "package-system": "aarch64-linux",
       "system": "aarch64-linux",
-      "name": "python3.14-baml-bridge-0.24.0",
+      "name": "python3.14-baml-bridge-0.25.2",
       "pname": "baml-bridge",
-      "version": "0.24.0",
+      "version": "0.25.2",
       "description": "Python runtime for SDKs generated from BAML",
       "licenses": [
         "Apache-2.0"
@@ -356,13 +359,13 @@
     },
     {
       "install_id": "baml-bridge",
-      "locked-url": "github:mrdavidlaing-flox/baml-nix/ec3e914b321df287d92a33fd37067494e5a59b1f?narHash=sha256-1gnFLEcD7/s254s9Rad/HQ4rO0XEVi59on4M6g/qhi8%3D",
+      "locked-url": "github:mrdavidlaing-flox/baml-nix/b4b6d5b8aef18418696f6f9806720705f2521a1b?narHash=sha256-kSN7LMP0z%2BCwhmy9tE48a%2BfEhZ5ckVHCtexihcM4krk%3D",
       "flake-description": "The BAML language (baml, baml-cli, python3Packages.baml-bridge) packaged nixpkgs-style",
       "locked-flake-attr-path": "packages.x86_64-linux.baml-bridge",
-      "derivation": "/nix/store/qbwkzls34pk0fqc2spyb4515fxb8x4hf-python3.14-baml-bridge-0.24.0.drv",
+      "derivation": "/nix/store/1ssysvg1jwn3hn3alzpv8n3m5a1jg8ay-python3.14-baml-bridge-0.25.2.drv",
       "outputs": {
-        "dist": "/nix/store/6s5m59hai724w5dsl2jj9q9fdhpaml7i-python3.14-baml-bridge-0.24.0-dist",
-        "out": "/nix/store/hhm9lngfj955a49w42xqwj474wmwsmm7-python3.14-baml-bridge-0.24.0"
+        "dist": "/nix/store/mj9jdyh4dbr2il9sf099fjv69bf32az8-python3.14-baml-bridge-0.25.2-dist",
+        "out": "/nix/store/2w9gfycgxgx09j1cdf2yn9324jp7pg2d-python3.14-baml-bridge-0.25.2"
       },
       "output-names": [
         "out",
@@ -374,9 +377,9 @@
       "requested-outputs-to-install": [],
       "package-system": "x86_64-linux",
       "system": "x86_64-linux",
-      "name": "python3.14-baml-bridge-0.24.0",
+      "name": "python3.14-baml-bridge-0.25.2",
       "pname": "baml-bridge",
-      "version": "0.24.0",
+      "version": "0.25.2",
       "description": "Python runtime for SDKs generated from BAML",
       "licenses": [
         "Apache-2.0"
