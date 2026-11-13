@@ -3,6 +3,9 @@
   buildPythonPackage,
   callPackage,
   rustPlatform,
+  pkg-config,
+  aws-lc,
+  sqlite,
   baml-cli,
   protobuf,
   pydantic,
@@ -22,6 +25,13 @@ buildPythonPackage {
   nativeBuildInputs = [
     rustPlatform.cargoSetupHook
     rustPlatform.maturinBuildHook
+    pkg-config
+  ];
+
+  # System AWS-LC and SQLite for aws-lc-sys and libsqlite3-sys, as for baml-cli.
+  buildInputs = [
+    aws-lc
+    sqlite
   ];
 
   env.BAML_GIT_SHA = baml-cli.BAML_GIT_SHA;

@@ -2,6 +2,9 @@
   lib,
   rustPlatform,
   fetchFromGitHub,
+  pkg-config,
+  aws-lc,
+  sqlite,
   versionCheckHook,
   nix-update-script,
 }:
@@ -27,6 +30,14 @@ rustPlatform.buildRustPackage (finalAttrs: {
     "baml-cli"
     "--bin"
     "baml-pack-host"
+  ];
+
+  # nixpkgs' cargoSetupHook makes aws-lc-sys (via rustls) and libsqlite3-sys
+  # link system libraries, found via pkg-config, instead of bundled copies.
+  nativeBuildInputs = [ pkg-config ];
+  buildInputs = [
+    aws-lc
+    sqlite
   ];
 
   # The source tarball has no .git; baml_artifact's build script needs the
