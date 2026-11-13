@@ -10,6 +10,7 @@ from typing import Callable, Literal, Protocol
 
 import baml_sdk
 
+from . import claude
 from .tools import ToolRefused, Tools, tail
 
 
@@ -31,10 +32,13 @@ class Client(Protocol):
 
 
 class BamlClient:
-    """The real thing: PlanUpdate asks the LLM, ApplyUpdate is plain BAML."""
+    """The real thing: PlanUpdate asks Claude Code, ApplyUpdate is plain BAML."""
+
+    def __init__(self, model: str | None = None):
+        self.model = model
 
     def plan_update(self, attr, current_version, package_nix, package_path, previous_errors):
-        return baml_sdk.plan_update_sync(attr, current_version, package_nix, package_path, previous_errors)
+        return claude.plan_update(attr, current_version, package_nix, package_path, previous_errors, self.model)
 
     def apply_update(self, plan, tools):
         return baml_sdk.apply_update_sync(plan, tools.read_file, tools.write_file, tools.run_command)

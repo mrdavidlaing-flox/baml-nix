@@ -3,9 +3,12 @@
 A Python workflow that bumps nixpkgs packages to their latest upstream
 release. It uses two BAML functions:
 
-- **`PlanUpdate`** (`baml_src/plan.baml`) asks GPT-6 Luna, through
-  OpenRouter, for an exact update plan: the edits, the hash refetches and
-  the risks.
+- **`PlanUpdate`** (`baml_src/plan.baml`) asks Claude for an exact update
+  plan: the edits, the hash refetches and the risks. It uses BAML's built-in
+  **Claude Code** client, which runs your local `claude` CLI with its login
+  (a Claude Pro/Max subscription or an API key), so no API key needs
+  setting here. The `UpdatePlan` schema goes to Claude Code as
+  `--json-schema`, and the reply comes back as structured output.
 - **`ApplyUpdate`** (`baml_src/apply.baml`) is plain BAML code with no LLM.
   It carries out the plan through Python callbacks (`updater/tools.py`) that
   can only touch one throwaway nixpkgs worktree and run a short list of
@@ -19,9 +22,9 @@ package.
 
 ```sh
 cd examples/nixpkgs-updater
+claude auth login                  # once, if Claude Code isn't logged in
 flox activate                      # Python 3.14, baml, baml-bridge
 baml generate                      # writes baml_sdk/ (not committed)
-export OPENROUTER_API_KEY=sk-or-…
 python -m updater --nixpkgs ~/Work/nixpkgs jq ripgrep
 ```
 
@@ -36,8 +39,23 @@ git -C ~/Work/nixpkgs worktree remove /tmp/baml-updater-<timestamp>
 git -C ~/Work/nixpkgs branch -D baml-updater/<timestamp>
 ```
 
-Each package costs up to three `PlanUpdate` calls; GPT-6 Luna is cheap
-($0.10 / $0.50 per million input/output tokens when checked).
+Each package costs up to three `PlanUpdate` calls, each one `claude -p` run
+against your Claude plan's usage (about 11 seconds each with Sonnet when
+tested). `--model M` picks another model (`opus`, `haiku`, or a full model
+id). Claude Code isn't in the Flox environment: any `claude` on your `PATH`
+works, or set `CLAUDE_BIN`.
+
+### How Claude Code is called
+
+BAML's `claude_code.ClaudeCodeClient` runs
+`claude -p --input-format stream-json --output-format stream-json --tools "" --no-session-persistence --json-schema …`:
+none of Claude Code's own tools, no saved session, and the result type as a
+JSON schema. `updater/claude.py` builds that client at run time to choose
+the model and executable and to start Claude in an empty temporary
+directory, so it doesn't load project files from wherever you run the demo.
+Your user-level Claude Code setup still applies (for example `~/.claude`
+settings and claude.ai MCP connectors): BAML passes `--strict-mcp-config`
+only when the client itself attaches MCP servers.
 
 ## Safety limits
 
@@ -73,8 +91,9 @@ Each package costs up to three `PlanUpdate` calls; GPT-6 Luna is cheap
 - the tools' path jail and command allowlist;
 - `ApplyUpdate` against a tiny git repo;
 - the retry loop, with a fake planner;
-- a full end-to-end run through BAML against `tests/stub_llm.py`, a local
-  stand-in for OpenRouter.
+- `updater/claude.py`: structured output, failures, the login preflight;
+- a full end-to-end run through BAML against `tests/fake_claude.py`, a fake
+  `claude` that speaks Claude Code's stream-json protocol.
 
 The same suite is the flake check `nixpkgs-updater` (`check.nix`).
 

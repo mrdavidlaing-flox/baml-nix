@@ -1,25 +1,26 @@
-"""python -m updater [--nixpkgs PATH] ATTR..."""
+"""python -m updater [--nixpkgs PATH] [--model MODEL] ATTR..."""
 
 from __future__ import annotations
 
 import argparse
-import os
 import subprocess
 import sys
 import time
 from pathlib import Path
 
-from . import workflow
+from . import claude, workflow
 
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="python -m updater", description=__doc__)
     parser.add_argument("--nixpkgs", type=Path, default=Path.home() / "Work" / "nixpkgs")
+    parser.add_argument("--model", help="Claude model for PlanUpdate (default: sonnet)")
     parser.add_argument("attrs", nargs="+", metavar="ATTR")
     args = parser.parse_args(argv)
 
-    if not os.environ.get("OPENROUTER_API_KEY"):
-        print("error: OPENROUTER_API_KEY is not set", file=sys.stderr)
+    problem = claude.preflight()
+    if problem:
+        print(f"error: {problem}", file=sys.stderr)
         return 2
 
     run_id = time.strftime("%Y%m%d-%H%M%S")
@@ -27,7 +28,7 @@ def main(argv: list[str] | None = None) -> int:
     outcomes = workflow.run(
         args.attrs,
         worktree,
-        workflow.BamlClient(),
+        workflow.BamlClient(args.model),
         workflow.nix_check(worktree),
         workflow.nix_locate(worktree),
     )

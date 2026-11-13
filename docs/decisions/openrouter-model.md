@@ -1,3 +1,8 @@
+> **Superseded (2026-11-13):** the demo no longer uses OpenRouter.
+> `PlanUpdate` now uses BAML's built-in Claude Code client with the local
+> `claude` login; see `examples/nixpkgs-updater/README.md` ("How Claude Code
+> is called"). Kept for history.
+
 # Decision: OpenRouter model id for the demo
 
 Date: 2026-11-05. Source: `GET https://openrouter.ai/api/v1/models`

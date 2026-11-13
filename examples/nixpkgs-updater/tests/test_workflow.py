@@ -120,15 +120,17 @@ def test_unknown_attr_reported_and_loop_continues(repo):
     assert "not found" in outcomes[0].detail
 
 
-def test_missing_api_key_fails_before_worktree(monkeypatch, capsys):
+def test_missing_claude_fails_before_worktree(monkeypatch, capsys):
     from updater import __main__ as cli
     from updater import workflow
 
-    monkeypatch.delenv("OPENROUTER_API_KEY", raising=False)
+    monkeypatch.setenv("CLAUDE_BIN", "definitely-not-claude")
     created = []
     monkeypatch.setattr(workflow, "create_worktree", lambda *a: created.append(a))
     assert cli.main(["hello"]) == 2
-    assert capsys.readouterr().err.strip() == "error: OPENROUTER_API_KEY is not set"
+    assert capsys.readouterr().err.strip() == (
+        "error: definitely-not-claude not found on PATH; install Claude Code and run `claude auth login`"
+    )
     assert created == []
 
 

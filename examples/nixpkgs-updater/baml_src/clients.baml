@@ -1,7 +1,6 @@
-// GPT-6 Luna through OpenRouter. The key comes from OPENROUTER_API_KEY at
-// request time. OPENROUTER_BASE_URL is only set by the offline tests, which
-// point it at a local stub; unset, the client uses OpenRouter itself.
-client OpenRouterLuna = openai.OpenRouterClient.new(
-    model = "openai/gpt-6-luna",
-    base_url = env.OPENROUTER_BASE_URL,
-);
+// Your local Claude Code CLI and its login (a Claude Pro/Max subscription
+// or an API key): BAML runs `claude -p` with no tools and passes the
+// UpdatePlan schema as --json-schema. updater/claude.py builds the same client
+// at run time to pick the model, the executable and an empty working
+// directory; this one is the default for direct calls.
+client ClaudeCode = claude_code.ClaudeCodeClient.new(model = "sonnet");

@@ -26,7 +26,7 @@ function PlanUpdate(
   package_path: string,
   previous_errors: string[],
 ) -> UpdatePlan {
-  client: OpenRouterLuna
+  client: ClaudeCode
   prompt: `
     ${role("system")}
     You maintain packages in nixpkgs. Plan how to update one package to its

@@ -41,10 +41,15 @@ Expected: every line is `/usr/lib/…`, `/System/Library/…` or
 ```sh
 cd examples/nixpkgs-updater
 flox activate -- bash -c 'baml generate && python -m pytest -q tests'
-flox activate -- python -m updater hello   # with OPENROUTER_API_KEY unset
+CLAUDE_BIN=no-such-claude flox activate -- python -m updater hello
 ```
 
-Expected: `21 passed`, then `error: OPENROUTER_API_KEY is not set` (exit 2).
+Expected: `29 passed`, then this error, with exit code 2:
+
+```text
+error: no-such-claude not found on PATH; install Claude Code and run `claude auth login`
+```
+
 The environment uses the committed `.flox/env/manifest.lock`, which pins
 `baml` and `baml-bridge` to a commit of
 `github:mrdavidlaing-flox/baml-nix`. On a Mac this is where those packages
@@ -54,7 +59,7 @@ clean.
 ## 5. Optional: one real run
 
 ```sh
-export OPENROUTER_API_KEY=sk-or-…
+claude auth login   # once, if Claude Code isn't logged in
 flox activate -- python -m updater --nixpkgs ~/Work/nixpkgs jq
 ```
 

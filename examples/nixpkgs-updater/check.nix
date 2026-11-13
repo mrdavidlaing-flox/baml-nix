@@ -1,11 +1,10 @@
 # Offline check of the nixpkgs-updater demo: generate the SDK, then run the
-# unit tests and a stubbed end-to-end run (a local fake LLM endpoint).
+# unit tests and an end-to-end run against a fake `claude` (tests/fake_claude.py).
 {
   runCommand,
   python3,
   baml,
   git,
-  cacert,
 }:
 
 let
@@ -27,9 +26,6 @@ runCommand "nixpkgs-updater-check"
     chmod -R u+w demo
     cd demo
     export HOME=$TMPDIR
-    # BAML's HTTP client loads the system CA roots when it is created, even
-    # for the plain-HTTP local stub; the sandbox has none.
-    export SSL_CERT_FILE=${cacert}/etc/ssl/certs/ca-bundle.crt
     baml generate
     python -m pytest -q -p no:cacheprovider tests
     touch $out
