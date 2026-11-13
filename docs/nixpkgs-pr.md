@@ -4,7 +4,7 @@
 passes and you have confirmed your GitHub id.**
 
 The branch is `baml-language-init` in `~/Work/nixpkgs`, cut from
-NixOS/nixpkgs master `7fc3d159e524` (2026-11-06). It has four commits and
+NixOS/nixpkgs master `c3c678c0a028` (2026-11-12). It has four commits and
 has not been pushed. The older `baml-init` branch (shelved BAML v0) is
 unrelated: don't submit it.
 
@@ -79,6 +79,11 @@ for a different version. So the `baml` here:
 
 ### Notes for reviewers
 
+- **System libraries.** `cargoSetupHook` makes `aws-lc-sys` (via rustls)
+  and `libsqlite3-sys` link system libraries, so `baml-cli` takes
+  `pkg-config`, `aws-lc` and `sqlite`, and `baml-bridge` takes `pkg-config`
+  and `aws-lc` (it doesn't use SQLite). `ldd` confirms both link nixpkgs'
+  `libcrypto-awslc`, and `baml-cli` links its `libsqlite3`.
 - **The source tarball has no `.git`.** `env.BAML_GIT_SHA` carries the
   tag's commit, which upstream's `baml_artifact/build.rs` requires.
 - **`baml-cli` has `doCheck = false`.** The crate's suite is large and
