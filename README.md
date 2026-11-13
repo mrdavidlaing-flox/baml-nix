@@ -17,9 +17,9 @@ nix flake check -L   # version, policy, generate+call, and the demo's offline te
 Use `overlays.default` to get `pkgs.baml`, `pkgs.baml-cli` and
 `python3Packages.baml-bridge` in your own nixpkgs.
 
-Supported systems: x86_64-linux (tested); aarch64-darwin (pending
-[docs/macos-checklist.md](docs/macos-checklist.md)); aarch64-linux
-(evaluates, untested). nixos-unstable no longer supports x86_64-darwin.
+Supported systems: x86_64-linux and aarch64-linux (tested); aarch64-darwin
+(pending [docs/macos-checklist.md](docs/macos-checklist.md)). nixos-unstable
+no longer supports x86_64-darwin.
 
 - [examples/nixpkgs-updater](examples/nixpkgs-updater): a Flox demo in
   which a Python workflow drives two BAML functions to bump nixpkgs

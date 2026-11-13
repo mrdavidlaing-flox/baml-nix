@@ -124,7 +124,7 @@ as described above.
 
 - Built on platform:
   - [x] x86_64-linux
-  - [ ] aarch64-linux
+  - [x] aarch64-linux
   - [ ] x86_64-darwin (unsupported on unstable)
   - [ ] aarch64-darwin ← tick after macos-checklist.md passes
 - Tested, as applicable:
