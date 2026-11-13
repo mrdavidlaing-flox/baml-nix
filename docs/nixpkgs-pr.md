@@ -13,11 +13,11 @@ Before submitting:
 1. **Confirm the maintainer id.** `gh api users/mrdavidlaing --jq .id`
    should print `227505`, the value in the `maintainers: add mrdavidlaing`
    commit.
-2. **Decide about 0.25.0.** `baml-language-0.25.0` came out while this was
-   being built. Submit at 0.24.0, or bump first (see
-   [updating.md](updating.md)).
-3. **Decide on the `Co-Authored-By: Claude` trailers.** They're in the
-   commits; keep them or strip them.
+2. **Review it yourself.** nixpkgs' Automation/AI policy (`CONTRIBUTING.md`)
+   requires the submitter to have reviewed and understood the change, and
+   to answer reviewers themselves. The commits carry the required
+   `Assisted-by: Claude Code (Claude Opus 5.5)` trailer, and the body below
+   has the separate PR-level disclosure.
 
 To submit:
 
@@ -26,21 +26,21 @@ cd ~/Work/nixpkgs
 git fetch origin master && git rebase FETCH_HEAD   # if master has moved on
 git push mrdavidlaing baml-language-init
 gh pr create --repo NixOS/nixpkgs --base master --head mrdavidlaing:baml-language-init \
-  --title "baml, baml-cli, python3Packages.baml-bridge: init at 0.24.0" --body-file <the Body section below>
+  --title "baml, baml-cli, python3Packages.baml-bridge: init at 0.25.2" --body-file <the Body section below>
 ```
 
 ---
 
 ## Title
 
-baml, baml-cli, python3Packages.baml-bridge: init at 0.24.0
+baml, baml-cli, python3Packages.baml-bridge: init at 0.25.2
 
 ## Body
 
 [BAML](https://github.com/BoundaryML/baml) is a programming language for
 building agents: typed LLM functions plus ordinary code, with generated
 SDKs for host languages. This packages the current BAML language
-(`baml_language/`, tag `baml-language-0.24.0`) from source:
+(`baml_language/`, tag `baml-language-0.25.2`) from source:
 
 - **`baml-cli`**: the toolchain (`baml-cli`, `baml-pack-host`), built with
   `rustPlatform.buildRustPackage`.
@@ -52,6 +52,10 @@ SDKs for host languages. This packages the current BAML language
   `pydantic` and `typing-extensions`.
 
 The older BAML v0 (`engine/`, PyPI `baml-py`) is not part of this PR.
+
+0.25.2 has the same source as 0.25.0 and 0.25.1. Those two releases differ
+only in version strings, and were re-cut because upstream's publishing of
+0.25.0 failed partway.
 
 ### Why `baml` is a script, not upstream's launcher
 
@@ -106,6 +110,13 @@ for a different version. So the `baml` here:
   environments (`CLAUDECODE`, `AI_AGENT`, …), and some commands then ask
   for BAML's agent skill (`--agent-skill-check off` bypasses it). This is
   upstream behaviour, unchanged here.
+
+### AI assistance
+
+This was written with Claude Code (Claude Opus 5.5): the packaging, the
+`baml` script, the tests and this description. Each commit carries an
+`Assisted-by:` trailer. I reviewed the changes, and I built and tested them
+as described above.
 
 ## Things done
 

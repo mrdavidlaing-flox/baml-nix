@@ -20,9 +20,9 @@ nix flake check -L
 Expected: `all checks passed!` This runs two Rust builds (the toolchain and
 the Python bridge), so allow time. The log should show:
 
-- `baml-cli-version-test> baml-cli 0.24.0`
+- `baml-cli-version-test> baml-cli 0.25.2`
 - `baml-policy-test>` with 31 `ok` lines
-- `baml-bridge-generate-test> ok 0.24.0`
+- `baml-bridge-generate-test> ok 0.25.2`
 - `nixpkgs-updater-check> 21 passed`
 
 ## 3. Check the binaries link only system libraries and the Nix store

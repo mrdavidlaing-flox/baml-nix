@@ -8,19 +8,19 @@
 
 rustPlatform.buildRustPackage (finalAttrs: {
   pname = "baml-cli";
-  version = "0.24.0";
+  version = "0.25.2";
 
   src = fetchFromGitHub {
     owner = "BoundaryML";
     repo = "baml";
     tag = "baml-language-${finalAttrs.version}";
-    hash = "sha256-75hAD4akeaJmOEjjzIjskIQVPHgiBT//shlriX+2y/Q=";
+    hash = "sha256-bHh4+usYxLDijJqR9ONp9lULX7kBloNvgRApKPPdP/A=";
   };
 
   cargoRoot = "baml_language";
   buildAndTestSubdir = "baml_language";
 
-  cargoHash = "sha256-BAIWoqJdOwkA/Oc5SCrZRJAr1ku14t2Rr2mJP95JXAs=";
+  cargoHash = "sha256-HQR+MWlJhCPLTvvB7vND2icQyW2VEG47RxtSmA6Jmrk=";
 
   cargoBuildFlags = [
     "--bin"
@@ -31,7 +31,7 @@ rustPlatform.buildRustPackage (finalAttrs: {
 
   # The source tarball has no .git; baml_artifact's build script needs the
   # commit being built. Must be the commit of the tag above.
-  env.BAML_GIT_SHA = "dec4713a0e7c9699442bf5855b4f327063f769c5";
+  env.BAML_GIT_SHA = "08e3d200287ab83244024b191e32fdad48f006d1";
 
   # baml_cli's suite is large and mostly end-to-end (network, telemetry,
   # agent installs). Behaviour is covered by versionCheckHook and the

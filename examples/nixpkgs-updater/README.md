@@ -80,7 +80,7 @@ The same suite is the flake check `nixpkgs-updater` (`check.nix`).
 
 ## Notes
 
-- **BAML version.** `baml.toml` pins `[toolchain] version = "0.24.0"`. The
+- **BAML version.** `baml.toml` pins `[toolchain] version = "0.25.2"`. The
   Nix `baml` refuses to run this project with any other version.
 - **Running inside a coding agent.** `baml-cli` notices agent environments
   (`CLAUDECODE`, `AI_AGENT`, …), and `baml generate` then demands BAML's

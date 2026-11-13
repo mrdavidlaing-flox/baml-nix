@@ -1,10 +1,10 @@
 [package]
 name = "nixpkgs_updater"
 
-# This project is written for BAML 0.24.0. Under Nix, `baml` refuses to run
+# This project is written for BAML 0.25.2. Under Nix, `baml` refuses to run
 # it with any other version instead of silently using what's installed.
 [toolchain]
-version = "0.24.0"
+version = "0.25.2"
 
 [generator.python]
 output_type = "python/pydantic"
