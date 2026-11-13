@@ -1,7 +1,7 @@
 # nixpkgs PR: baml, baml-cli, python3Packages.baml-bridge
 
 **Status: not ready to submit until [macos-checklist.md](macos-checklist.md)
-passes and you have confirmed your GitHub id.**
+passes.**
 
 The branch is `baml-language-init` in `~/Work/nixpkgs`, cut from
 NixOS/nixpkgs master `c3c678c0a028` (2026-11-12). It has four commits and
@@ -10,10 +10,7 @@ unrelated: don't submit it.
 
 Before submitting:
 
-1. **Confirm the maintainer id.** `gh api users/mrdavidlaing --jq .id`
-   should print `227505`, the value in the `maintainers: add mrdavidlaing`
-   commit.
-2. **Review it yourself.** nixpkgs' Automation/AI policy (`CONTRIBUTING.md`)
+1. **Review it yourself.** nixpkgs' Automation/AI policy (`CONTRIBUTING.md`)
    requires the submitter to have reviewed and understood the change, and
    to answer reviewers themselves. The commits carry the required
    `Assisted-by: Claude Code (Claude Opus 5.5)` trailer, and the body below
