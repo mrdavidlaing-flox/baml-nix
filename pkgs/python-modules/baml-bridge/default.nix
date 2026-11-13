@@ -5,7 +5,6 @@
   rustPlatform,
   pkg-config,
   aws-lc,
-  sqlite,
   baml-cli,
   protobuf,
   pydantic,
@@ -28,11 +27,9 @@ buildPythonPackage {
     pkg-config
   ];
 
-  # System AWS-LC and SQLite for aws-lc-sys and libsqlite3-sys, as for baml-cli.
-  buildInputs = [
-    aws-lc
-    sqlite
-  ];
+  # System AWS-LC for aws-lc-sys (via rustls), as for baml-cli. Unlike
+  # baml-cli, the bridge doesn't use libsqlite3-sys.
+  buildInputs = [ aws-lc ];
 
   env.BAML_GIT_SHA = baml-cli.BAML_GIT_SHA;
 
