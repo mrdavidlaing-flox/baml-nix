@@ -11,7 +11,7 @@ from typing import Callable, Literal, Protocol
 import baml_sdk
 
 from . import claude
-from .tools import ToolRefused, Tools, tail
+from .tools import ToolRefused, Tools, nix_env, tail
 
 
 @dataclass(frozen=True)
@@ -187,6 +187,7 @@ def nix_locate(worktree: Path) -> Locate:
         def nix_eval(expr: str) -> str:
             done = subprocess.run(
                 ["nix", "eval", "--raw", "--file", str(worktree), expr],
+                env=nix_env(),
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 text=True,
@@ -208,6 +209,7 @@ def nix_check(worktree: Path) -> Check:
     def check(attr: str) -> baml_sdk.CommandResult:
         done = subprocess.run(
             ["nix", "build", "--file", str(worktree), attr, "--no-link"],
+            env=nix_env(),
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,
             text=True,

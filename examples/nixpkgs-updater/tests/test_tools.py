@@ -165,3 +165,28 @@ def test_git_internals_refused(repo: Path):
     for path in [".git", ".git/config", "pkgs/../.git/HEAD"]:
         with pytest.raises(ToolRefused):
             tools.write_file(path, "x")
+
+
+def test_nix_env_enables_nix_command_and_keeps_user_config():
+    from updater.tools import nix_env
+
+    assert nix_env({})["NIX_CONFIG"] == "extra-experimental-features = nix-command"
+    env = nix_env({"NIX_CONFIG": "max-jobs = 4", "HOME": "/h"})
+    assert env["NIX_CONFIG"] == "max-jobs = 4\nextra-experimental-features = nix-command"
+    assert env["HOME"] == "/h"
+
+
+def test_commands_run_with_nix_command_enabled(repo, monkeypatch):
+    import subprocess
+
+    seen = {}
+    real_run = subprocess.run
+
+    def spy(argv, **kw):
+        seen["env"] = kw.get("env")
+        return real_run(argv, **kw)
+
+    monkeypatch.setattr(subprocess, "run", spy)
+    monkeypatch.delenv("NIX_CONFIG", raising=False)
+    Tools(repo).run_command(["git", "status", "--short"])
+    assert "nix-command" in seen["env"]["NIX_CONFIG"]

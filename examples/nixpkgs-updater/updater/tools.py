@@ -6,6 +6,7 @@ only a short list of commands may run.
 
 from __future__ import annotations
 
+import os
 import re
 import shlex
 import subprocess
@@ -31,6 +32,19 @@ VERSION = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._+-]*$")
 HTTPS = re.compile(r"^https://[^\s]+$")
 
 MAX_OUTPUT_CHARS = 20_000
+
+
+def nix_env(base: dict[str, str] | None = None) -> dict[str, str]:
+    """The environment for subprocesses, with `nix-command` enabled.
+
+    The workflow runs `nix eval` and `nix build`, and nix-update calls `nix`
+    too; many installs leave that feature off. NIX_CONFIG adds to the user's
+    configuration rather than replacing it.
+    """
+    env = dict(os.environ if base is None else base)
+    extra = "extra-experimental-features = nix-command"
+    env["NIX_CONFIG"] = f"{env['NIX_CONFIG']}\n{extra}" if env.get("NIX_CONFIG") else extra
+    return env
 
 
 class ToolRefused(Exception):
@@ -128,6 +142,7 @@ class Tools:
             done = subprocess.run(
                 argv,
                 cwd=self.root,
+                env=nix_env(),
                 stdout=subprocess.PIPE,
                 stderr=subprocess.STDOUT,
                 text=True,
